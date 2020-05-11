@@ -1,0 +1,333 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Junior developer task</title>
+    <style>
+        .bookmarksBar {
+            background: #e5e8eb;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #2d2d2d;
+            font-size: 13.5px;
+            overflow: hidden;
+            width: 100%;
+            display: flexbox;
+        }
+
+        .bar {
+            list-style: none;
+            background: #e5e8eb;
+            font-family: Arial, Helvetica, sans-serif;
+            color: rgb(46, 46, 46);
+            width: 100%;
+            touch-action: none;
+            padding: 0;
+            margin: 0 0.35em 0 0.35em;
+        }
+
+        .formBar {
+            margin: 0.4em;
+            display: inline-block;
+        }
+
+        .input {
+            color: rgb(46, 46, 46);
+            font-size: 13.5px;
+            font-family: Arial, Helvetica, sans-serif;
+            border: none;
+            width: 125px;
+            border-radius: 10px;
+            background: #ebebeb;
+            border-radius: 10px;
+            background: #e5e8eb;
+            box-shadow: inset 4px 4px 8px #d5d8db,
+                inset -4px -4px 8px #f5f8fb;
+            text-align: center;
+            outline: none;
+            transition: ease 200ms;
+            padding: 0.3em;
+            margin: 0.3em;
+            width: 125px;
+            height: 2em;
+
+        }
+
+        .input:hover {
+            background-color: #f3f5f8;
+            box-shadow: 4px 4px 8px #d5d8db,
+                -4px -4px 8px #f5f8fb;
+            transition: ease 200ms;
+        }
+
+        .input:active {
+            background-color: #e5e8eb;
+            box-shadow: none;
+            transition: ease 200ms;
+        }
+
+        .addBookmark {
+            color: rgb(46, 46, 46);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13.5px;
+            border: none;
+            outline: none;
+            border-radius: 10px;
+            background: #e5e8eb;
+            box-shadow: 4px 4px 8px #d5d8db,
+                -4px -4px 8px #f5f8fb;
+            width: 133.1px;
+            height: 35.1px;
+            padding: 0.3em;
+            margin: 0.3em;
+            text-align: center;
+        }
+
+        .addBookmark:hover {
+            background: #eef0f1;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 6px 6px 10px #d5d8db,
+                -6px -6px 10px #f5f8fb;
+            transition: ease 200ms;
+        }
+
+        .addBookmark:active {
+            background: #e5e8eb;
+            box-shadow: 2px 2px 4px #d5d8db,
+                -2px -2px 4px #f5f8fb;
+            transition: ease 200ms;
+        }
+
+        .item {
+            border-radius: 10px;
+            font-size: 13.5px;
+            background: #e5e8eb;
+            box-shadow: 4px 4px 8px #d5d8db,
+                -4px -4px 8px #f5f8fb;
+            padding: 0.3em;
+            margin: 0.4em;
+            width: 125px;
+            height: 2em;
+            user-select: none;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            justify-content: center;
+            display: inline-block;
+        }
+
+        a {
+            text-decoration: none;
+            color: #2d2d2d;
+        }
+
+        .item:hover {
+            background: #eef0f1;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 6px 6px 10px #d5d8db,
+                -6px -6px 10px #f5f8fb;
+            transition: ease 200ms;
+        }
+
+        .item:active {
+
+            background: #e5e8eb;
+            box-shadow: 2px 2px 4px #d5d8db,
+                -2px -2px 4px #f5f8fb;
+            transition: ease 200ms;
+        }
+
+        li {
+            display: flexbox;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin: 0px 4px -3px 4px;
+        }
+
+        .active {
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bookmarksBar">
+        <div class="formBar">
+            <form method="POST">
+                <input class="input" id="name" placeholder="Bookmark Name">
+                <input class="input" id="bookmarkUrl" placeholder="Bookmark Address">
+                <input id="button" type="button" class="addBookmark" value="Add Bookmark" onclick=addBookmark()>
+                <input id="button" type="button" class="addBookmark" value="Instructions" onclick=instructions()>
+            </form>
+        </div>
+        <ul class="bar" id="bar">
+        </ul>
+    </div>
+
+    <script>
+        //Basic functionality for the form
+        let bookmarkName = document.getElementById("name");
+        let bookmarkUrl = document.getElementById("bookmarkUrl");
+        //The initial bookmarks
+        let bookmarks = [
+            { "name": "BBC News", "url": "https://www.bbc.com/news" },
+            { "name": "Helsingin Sanomat", "url": "https://www.hs.fi/" },
+            { "name": "Vasabladet", "url": "https://www.vasabladet.fi/" },
+            { "name": "FOX News", "url": "https://www.foxnews.com/" },
+            { "name": "The Guardian", "url": "https://www.theguardian.com/international" },
+            { "name": "Henri Kasvand", "url": "https://www.linkedin.com/in/henrikasvand" }
+        ];
+
+        //Gets all the bookmarks from the array when the page is opened
+        function getBookmarks() {
+            for (let bookmark of bookmarks) {
+                const newListElement = document.createElement('li');
+                newListElement.setAttribute("class", "item");
+
+                const newBookmarkLink = document.createElement('a');
+                newBookmarkLink.setAttribute("href", `${bookmark.url}`);
+                newBookmarkLink.setAttribute("target", "_blank");
+
+                const newBookmarkText = document.createTextNode(`${bookmark.name}`);
+
+                const newBookmarkIcon = document.createElement('img');
+                newBookmarkIcon.setAttribute("src", `https://www.google.com/s2/favicons?domain_url=${bookmark.url}`)
+                newBookmarkIcon.setAttribute("height", "16px");
+                newBookmarkIcon.setAttribute("width", "16px;");
+                newBookmarkIcon.setAttribute("class", "icon");
+
+                bar.appendChild(newListElement);
+                newListElement.appendChild(newBookmarkIcon);
+                newListElement.appendChild(newBookmarkLink);
+                newBookmarkLink.append(newBookmarkText);
+            }
+        }
+
+        //Callback
+        getBookmarks();
+
+        //Adds a new bookmark from the form data
+        function addBookmark() {
+            bar.innerHTML = ""
+            bookmarks.push({
+                name: bookmarkName.value, url: bookmarkUrl.value
+            });
+            console.log(bookmarks);
+            for (let bookmark of bookmarks) {
+                const newListElement = document.createElement('li');
+                newListElement.setAttribute("class", "item");
+
+                const newBookmarkLink = document.createElement('a');
+                newBookmarkLink.setAttribute("href", `${bookmark.url}`);
+                newBookmarkLink.setAttribute("target", "_blank");
+
+                const newBookmarkText = document.createTextNode(`${bookmark.name}`);
+
+                const newBookmarkIcon = document.createElement('img');
+                newBookmarkIcon.setAttribute("src", `https://www.google.com/s2/favicons?domain_url=${bookmark.url}`)
+                newBookmarkIcon.setAttribute("height", "16px");
+                newBookmarkIcon.setAttribute("width", "16px;");
+                newBookmarkIcon.setAttribute("class", "icon");
+
+                bar.appendChild(newListElement);
+                newListElement.appendChild(newBookmarkIcon);
+                newListElement.appendChild(newBookmarkLink);
+                newBookmarkLink.append(newBookmarkText);
+            }
+        }
+
+        //Instructions for the user
+        function instructions() {
+            alert("Click the text to open the page in a new tab.\nDrag from the Bookmark button to move it around.\nRemember to add a FULL address, including the 'https://' part.\n\n Thank You for using this Bookmarks Bar! May it brighten up Your day!\n -Henri")
+        }
+
+        // Makes all the items in the bar movable
+        var container = document.querySelector("#bar");
+        var activeItem = null;
+        var active = false;
+
+        //For mobile
+        container.addEventListener("touchstart", dragStart, false);
+        container.addEventListener("touchend", dragEnd, false);
+        container.addEventListener("touchmove", drag, false);
+        //For desktop
+        container.addEventListener("mousedown", dragStart, false);
+        container.addEventListener("mouseup", dragEnd, false);
+        container.addEventListener("mousemove", drag, false);
+
+        //When the dragging starts
+        function dragStart(e) {
+
+            if (e.target !== e.currentTarget) {
+                active = true;
+
+                activeItem = e.target;
+
+                if (activeItem !== null) {
+                    if (!activeItem.xOffset) {
+                        activeItem.xOffset = 0;
+                    }
+
+                    if (!activeItem.yOffset) {
+                        activeItem.yOffset = 0;
+                    }
+
+                    if (e.type === "touchstart") {
+                        activeItem.initialX = e.touches[0].clientX - activeItem.xOffset;
+                        activeItem.initialY = e.touches[0].clientY - activeItem.yOffset;
+                    } else {
+                        console.log("doing something!");
+                        activeItem.initialX = e.clientX - activeItem.xOffset;
+                        activeItem.initialY = e.clientY - activeItem.yOffset;
+                    }
+                }
+            }
+        }
+
+        //When the dragging ends
+
+        function dragEnd(e) {
+            if (activeItem !== null) {
+                activeItem.initialX = activeItem.currentX;
+                activeItem.initialY = activeItem.currentY;
+            }
+            active = false;
+            activeItem = null;
+        }
+
+        //The dragging
+
+        function drag(e) {
+            if (active) {
+                if (e.type === "touchmove") {
+                    e.preventDefault();
+
+                    activeItem.currentX = e.touches[0].clientX - activeItem.initialX;
+                    activeItem.currentY = e.touches[0].clientY - activeItem.initialY;
+                } else {
+                    activeItem.currentX = e.clientX - activeItem.initialX;
+                    activeItem.currentY = e.clientY - activeItem.initialY;
+                }
+                activeItem.xOffset = activeItem.currentX;
+                activeItem.yOffset = activeItem.currentY;
+                setTranslate(activeItem.currentX, activeItem.currentY, activeItem);
+            }
+        }
+        //Drops to a new location
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+        }
+
+    </script>
+</body>
+
+</html>
